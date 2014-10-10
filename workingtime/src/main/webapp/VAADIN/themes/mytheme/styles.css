@@ -1,0 +1,51 @@
+  	.verticalGroup {
+		margin: 0em 1em 1em !important;
+		width: auto !important;
+		border-left: 1px solid #ccc;
+		border-right: 1px solid #ccc;
+	}
+	
+	.v-touchkit-navbar {
+		z-index: 1;
+		background: rgb(199, 43, 43) !important;
+		box-shadow: 0 2px rgba(197, 197, 197, 0.5);
+		color: white !important;
+	}
+	
+	.v-touchkit-navbutton:after, .v-touchkit-datepicker:after {
+		color: rgb(199, 43, 43) !important;
+	}
+	
+	.v-touchkit-navbutton:active {
+		background: #F31D37 !important;
+	}
+	
+	.v-touchkit-switch-wrapper {
+		background: rgb(199, 43, 43) !important;
+	}
+		
+	.v-touchkit-navbutton-back, .v-touchkit-navbutton-forward {
+		color: white !important;
+	}
+	
+	.v-button-wrap {
+		color: white;
+	}
+	
+	.v-textarea:focus, .v-textfield:focus {
+		box-shadow: inset 0 -3px rgb(199, 43, 43) !important;
+	}
+	
+	.gwt-TextBox {
+		border: none;
+		color: #43423d;
+		font-weight: 500;
+		font-size: 16px;
+		background: transparent;
+		margin: 0;
+		display: block;
+		padding: 0 1.5em 0 0;
+		min-height: 22px;
+		min-width: 80px;
+		width: 100%;
+	}
