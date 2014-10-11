@@ -64,11 +64,15 @@ public class MenuView extends NavigationView {
 				
 				FilterView filterView = new FilterView();
 				NavigationButton filterButton = new NavigationButton("Filter", filterView);
+				
+				PrintView printView = new PrintView();
+				NavigationButton printButton = new NavigationButton("Tage ausdrucken", printView);
 
 				// Add Buttons to the group
 				addComponent(editDayButton);
 				addComponent(showAllDaysButton);
 				addComponent(filterButton);
+				addComponent(printButton);
 			}
 		});
 

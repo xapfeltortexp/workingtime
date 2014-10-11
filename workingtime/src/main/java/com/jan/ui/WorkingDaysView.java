@@ -1,7 +1,6 @@
 package com.jan.ui;
 
 import java.util.Date;
-import java.util.Iterator;
 
 import com.jan.MyTouchKitUI;
 import com.jan.data.WorkingDay;
@@ -43,9 +42,7 @@ public class WorkingDaysView extends NavigationView {
 			
 			@Override
 			public void buildComponentGroup() {
-				final Iterator<WorkingDay> iterator = MyTouchKitUI.getManager().getWorkingDays().iterator();
-				while(iterator.hasNext()) {
-					WorkingDay workingDay = iterator.next();
+				for(final WorkingDay workingDay : MyTouchKitUI.getManager().getWorkingDays()) {
 					
 					// Create a layout. Label gets added there
 					final HorizontalLayout workingDayLayout = new HorizontalLayout();
@@ -56,9 +53,12 @@ public class WorkingDaysView extends NavigationView {
 						
 						@Override
 						public void buttonClick(ClickEvent event) {
+							WorkingDay tmpDay = workingDay;
 							HorizontalLayout tmpLayout = workingDayLayout;
 							
-							iterator.remove();
+							// Tag löschen
+							MyTouchKitUI.getManager().getWorkingDays().remove(tmpDay);
+							
 							MyTouchKitUI.getManager().getXmlStorage().saveDays(MyTouchKitUI.getManager().getWorkingDays());
 							componentGroup.removeComponent(tmpLayout);
 						}

@@ -20,7 +20,7 @@ public class SaveClickListener {
 	private String notice;
 
 	private List<TextField> workingTimeFields;
-	private String timePattern = "((\\d{1}|\\d{2}):\\d{2})\\s*-\\s*(\\d{2}:\\d{2})";
+	private String timePattern = "((\\d{1}|\\d{2}):\\d{2})\\s*-\\s*((\\d{1}|\\d{2}):\\d{2})";
 
 	public SaveClickListener(Date date, List<TextField> workingTimeFields, String notice) {
 		this.date = date;

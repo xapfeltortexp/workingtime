@@ -1,8 +1,6 @@
 package com.jan.ui;
 
-import java.util.ConcurrentModificationException;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -27,12 +25,14 @@ import com.vaadin.ui.TextField;
 @SuppressWarnings("serial") public class DayView extends NavigationView {
 
 	private CssLayout contentLayout;
-	private List<TextField> workingTimeFields;
 
 	private CustomVerticalComponentGroup inputComponentGroup;
 
 	private DatePicker datePicker;
+	
 	private TextField workingTimeField;
+	private List<TextField> workingTimeFields;
+	
 	private TextArea noticeArea;
 	private Button cancelButton;
 	private Button saveButton;
@@ -179,14 +179,19 @@ import com.vaadin.ui.TextField;
 	}
 
 	private void resetFields() {
-		try {
-			Iterator<TextField> iterator = workingTimeFields.iterator();
-			while (iterator.hasNext()) {
-				iterator.next().setValue("");
-			}
-			noticeArea.setValue("");
-		} catch (ConcurrentModificationException e) {
-
+		noticeArea.setValue("");
+		for(TextField textField : workingTimeFields) {
+			inputComponentGroup.removeComponent(textField);
 		}
+		workingTimeFields.clear();
+		
+		// The textfield for the working time - pattern XXH XXM
+		workingTimeField = new TextField("Arbeiszeit");
+		workingTimeField.setInputPrompt("00:00 - 00:00");
+		workingTimeFields.add(workingTimeField);
+
+		// Add a valuechangelistener
+		workingTimeField.addValueChangeListener(new DayValueChangeListener(workingTimeFields, workingTimeField, inputComponentGroup));
+		inputComponentGroup.addComponent(workingTimeField);
 	}
 }
