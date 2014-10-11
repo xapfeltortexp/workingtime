@@ -2,7 +2,6 @@ package com.jan.data.storage;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -10,14 +9,12 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.UnmarshalException;
 import javax.xml.bind.Unmarshaller;
 
 import com.jan.data.Settings;
 import com.jan.data.WorkingDay;
 import com.jan.data.WorkingDayStore;
-import com.jan.data.time.TimeFactory;
-import com.jan.ui.SettingsView;
+import com.jan.ui.FilterView;
 
 public class XMLStorage {
 
@@ -56,24 +53,10 @@ public class XMLStorage {
 	 * @param workingTimes
 	 * @param notice
 	 */
-	public void addNewDay(Date date, List<String> workingTimes, String notice) {
-		List<WorkingDay> workingDayList = getExistingWorkingDays();
+	public void saveDays(List<WorkingDay> workingDays) {
 		WorkingDayStore workingDayStore = new WorkingDayStore();
-		
-		// Create a new WorkingDay object
-		WorkingDay workingDay = getWorkingDay(date, workingDayList);
-		if (workingDay == null) {
-			workingDay = new WorkingDay();
-			workingDayList.add(workingDay);
-		}
-		workingDay.setDate(date);
-		workingDay.setWorkingTimes(workingTimes);
-		workingDay.setNotice(notice);
+		workingDayStore.setWorkingDays(workingDays);
 
-		// Add workingday to the store
-		workingDayStore.setWorkingDays(workingDayList);
-
-		// Save to XML File
 		try {
 			JAXBContext context = JAXBContext.newInstance(WorkingDayStore.class);
 			Marshaller marshaller = context.createMarshaller();
@@ -91,21 +74,16 @@ public class XMLStorage {
 	 * 
 	 * @return a list with all {@link WorkingDay}'s
 	 */
-	public List<WorkingDay> getExistingWorkingDays() {
+	public List<WorkingDay> loadWorkingDays() {
 		try {
 			JAXBContext context = JAXBContext.newInstance(WorkingDayStore.class);
 			Unmarshaller unmarshaller = context.createUnmarshaller();
-
-			WorkingDayStore workingDayStore = null;
-			try {
-				workingDayStore = (WorkingDayStore) unmarshaller.unmarshal(new File(DATA_FILE));
-			} catch (UnmarshalException e) {
+			WorkingDayStore workingDayStore = (WorkingDayStore) unmarshaller.unmarshal(new File(DATA_FILE));
+			
+			if (workingDayStore == null || workingDayStore.getWorkingDays() == null || workingDayStore.getWorkingDays().isEmpty()) {
 				return new ArrayList<WorkingDay>();
 			}
 
-			if (workingDayStore == null || workingDayStore.getWorkingDays().isEmpty()) {
-				return new ArrayList<WorkingDay>();
-			}
 			return workingDayStore.getWorkingDays();
 		} catch (JAXBException e) {
 			e.printStackTrace();
@@ -114,26 +92,8 @@ public class XMLStorage {
 	}
 
 	/**
-	 * Get a exactly workingday from the function
-	 * {@link XMLStorage#getExistingWorkingDays()}
-	 * 
-	 * @param date
-	 * @return
-	 */
-	public WorkingDay getWorkingDay(Date date, List<WorkingDay> workingDayList) {
-		SimpleDateFormat dateFormat = new TimeFactory().getDateFormat();
-		for (WorkingDay workingDay : workingDayList) {
-			// Check if there is already an existing day for this date
-			if (dateFormat.format(workingDay.getDate()).equalsIgnoreCase(dateFormat.format(date))) {
-				return workingDay;
-			}
-		}
-		return null;
-	}
-
-	/**
 	 * Generate a {@link Settings} object out of a XML File. The settings can be
-	 * edit in the {@link SettingsView}
+	 * edit in the {@link FilterView}
 	 * 
 	 * @return
 	 */

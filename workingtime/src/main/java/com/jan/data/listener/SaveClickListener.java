@@ -20,7 +20,7 @@ public class SaveClickListener {
 	private String notice;
 
 	private List<TextField> workingTimeFields;
-	private String timePattern = "(\\d{2}:\\d{2})\\s*-\\s*(\\d{2}:\\d{2})";
+	private String timePattern = "((\\d{1}|\\d{2}):\\d{2})\\s*-\\s*(\\d{2}:\\d{2})";
 
 	public SaveClickListener(Date date, List<TextField> workingTimeFields, String notice) {
 		this.date = date;
@@ -47,7 +47,7 @@ public class SaveClickListener {
 
 			// Split the both times into twice
 			String timeOne = timeMatcher.group(1);
-			String timeTwo = timeMatcher.group(2);
+			String timeTwo = timeMatcher.group(3);
 
 			TimeValidator validatorOne = new TimeValidator(timeOne);
 			TimeValidator validatorTwo = new TimeValidator(timeTwo);
@@ -55,6 +55,7 @@ public class SaveClickListener {
 				validatorOne.isValid();
 				validatorTwo.isValid();
 			} catch (NotValidTimeException e) {
+				e.printStackTrace();
 				field.setComponentError(new UserError(e.getMessage()));
 				return false;
 			}
@@ -75,7 +76,8 @@ public class SaveClickListener {
 		}
 		
 		// Save to XML
-		MyTouchKitUI.getManager().getXmlStorage().addNewDay(date, workingTimes, notice);
+		MyTouchKitUI.getManager().addWorkingDay(date, workingTimes, notice);
+		MyTouchKitUI.getManager().getXmlStorage().saveDays(MyTouchKitUI.getManager().getWorkingDays());
 		return true;
 	}
 }

@@ -1,5 +1,6 @@
 package com.jan.ui;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.vaadin.risto.stepper.IntStepper;
@@ -7,6 +8,7 @@ import org.vaadin.risto.stepper.IntStepper;
 import com.jan.MyTouchKitUI;
 import com.jan.data.Settings;
 import com.jan.data.storage.XMLStorage;
+import com.jan.data.time.TimeFactory;
 import com.jan.ui.custom.CustomVerticalComponentGroup;
 import com.vaadin.addon.touchkit.ui.DatePicker;
 import com.vaadin.addon.touchkit.ui.NavigationView;
@@ -14,13 +16,13 @@ import com.vaadin.addon.touchkit.ui.Switch;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.ui.Button;
-import com.vaadin.ui.Notification;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
 import com.vaadin.ui.CssLayout;
+import com.vaadin.ui.Notification;
 
 @SuppressWarnings("serial")
-public class SettingsView extends NavigationView {
+public class FilterView extends NavigationView {
 
 	private Switch enableSwitch;
 	private DatePicker startDatePicker;
@@ -31,8 +33,8 @@ public class SettingsView extends NavigationView {
 
 	private Settings settings;
 
-	public SettingsView() {
-		setCaption("Einstellungen");
+	public FilterView() {
+		setCaption("Filter");
 		settings = new XMLStorage().getSettings();
 
 		// build the componentgroup in the middle
@@ -96,7 +98,9 @@ public class SettingsView extends NavigationView {
 					}
 
 					// Check if the startDate is before endDate
-					if (!startDatePicker.getValue().before(endDatePicker.getValue())) {
+					TimeFactory timeFactory = new TimeFactory();
+					SimpleDateFormat dateFormat = timeFactory.getDateFormat();
+					if (!startDatePicker.getValue().before(endDatePicker.getValue()) && !dateFormat.format(startDatePicker.getValue()).equalsIgnoreCase(dateFormat.format(endDatePicker.getValue()))) {
 						Notification.show("Das Startdatum muss vor dem Enddatum liegen!");
 						return;
 					}

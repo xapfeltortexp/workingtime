@@ -16,7 +16,7 @@ public class TimeValidator {
 
 	public boolean isValid() throws NotValidTimeException {
 		if (!workingTime.contains(":")) {
-			throw new NotValidTimeException("The time does not contains ':'");
+			throw new NotValidTimeException("The time '" + workingTime + "'does not contains ':'");
 		}
 
 		// Split the time into to categorys

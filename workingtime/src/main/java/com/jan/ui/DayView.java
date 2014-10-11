@@ -1,14 +1,15 @@
 package com.jan.ui;
 
+import java.util.ConcurrentModificationException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.jan.MyTouchKitUI;
 import com.jan.data.WorkingDay;
 import com.jan.data.listener.DayValueChangeListener;
 import com.jan.data.listener.SaveClickListener;
-import com.jan.data.storage.XMLStorage;
 import com.jan.data.time.TimeFactory;
 import com.jan.ui.custom.CustomVerticalComponentGroup;
 import com.vaadin.addon.touchkit.ui.DatePicker;
@@ -23,14 +24,13 @@ import com.vaadin.ui.CssLayout;
 import com.vaadin.ui.TextArea;
 import com.vaadin.ui.TextField;
 
-@SuppressWarnings("serial")
-public class DayView extends NavigationView {
+@SuppressWarnings("serial") public class DayView extends NavigationView {
 
 	private CssLayout contentLayout;
 	private List<TextField> workingTimeFields;
 
 	private CustomVerticalComponentGroup inputComponentGroup;
-	
+
 	private DatePicker datePicker;
 	private TextField workingTimeField;
 	private TextArea noticeArea;
@@ -39,7 +39,7 @@ public class DayView extends NavigationView {
 
 	public DayView() {
 		setCaption("Tag bearbeiten");
-		
+
 		contentLayout = new CssLayout();
 		workingTimeFields = new LinkedList<TextField>();
 
@@ -54,7 +54,7 @@ public class DayView extends NavigationView {
 
 		// set the content
 		setContent(contentLayout);
-		
+
 		// Check for existing data and fill the fields
 		checkExistingData();
 	}
@@ -71,7 +71,7 @@ public class DayView extends NavigationView {
 			@Override
 			public void buildComponentGroup() {
 				inputComponentGroup = this;
-				
+
 				datePicker = new DatePicker("Datum");
 				datePicker.setValue(new Date());
 				datePicker.addValueChangeListener(new ValueChangeListener() {
@@ -146,15 +146,15 @@ public class DayView extends NavigationView {
 	}
 
 	private void checkExistingData() {
-		WorkingDay workingDay = new XMLStorage().getWorkingDay(datePicker.getValue(), new XMLStorage().getExistingWorkingDays());
+		WorkingDay workingDay = MyTouchKitUI.getManager().getWorkingDay(datePicker.getValue());
 		if (workingDay == null) {
 			resetFields();
 			return;
 		}
 		datePicker.setValue(workingDay.getDate());
-		
+
 		// remove all workingTimeFields
-		for(TextField textField : workingTimeFields) {
+		for (TextField textField : workingTimeFields) {
 			inputComponentGroup.removeComponent(textField);
 		}
 		workingTimeFields.clear();
@@ -177,12 +177,16 @@ public class DayView extends NavigationView {
 			inputComponentGroup.addComponent(workingTimeField);
 		}
 	}
-	
+
 	private void resetFields() {
-		Iterator<TextField> iterator = workingTimeFields.iterator();
-		while(iterator.hasNext()) {
-			iterator.next().setValue("");
+		try {
+			Iterator<TextField> iterator = workingTimeFields.iterator();
+			while (iterator.hasNext()) {
+				iterator.next().setValue("");
+			}
+			noticeArea.setValue("");
+		} catch (ConcurrentModificationException e) {
+
 		}
-		noticeArea.setValue("");
 	}
 }

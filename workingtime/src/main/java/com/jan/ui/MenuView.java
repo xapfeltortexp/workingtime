@@ -17,7 +17,8 @@ import com.vaadin.ui.Layout;
 @SuppressWarnings("serial")
 public class MenuView extends NavigationView {
 
-	private final Layout contentLayout = new CssLayout();
+	private Layout contentLayout = new CssLayout();
+	private TimeFactory timeFactory = new TimeFactory();
 
 	public MenuView() {
 		setCaption("Menu");
@@ -33,14 +34,17 @@ public class MenuView extends NavigationView {
 				informationLabel.setContentMode(ContentMode.HTML);
 
 				if (settings == null || !settings.isEnabled()) {
-					informationLabel.setValue("Du hast derzeit keine Einstellungen festgelegt.<br>Dies kannst du unter dem Reiter 'Einstellungen' tun.");
+					informationLabel.setValue("Du hast derzeit keinen Filter festgelegt.<br>Dies kannst du unter dem Reiter 'Filter' tun.");
 				} else {
 					SimpleDateFormat dateFormat = new TimeFactory().getDateFormat();
-					informationLabel.setValue("Du hast eine Einstellung vorgenommen.<br>"
+					
+					boolean workedEnough = (settings.getHours() - timeFactory.getWorkedHoursUsingSettings()) <= 0;
+					
+					informationLabel.setValue("Du hast deinen Filter konfiguriert.<br>"
 							+ "Vom <b>" + dateFormat.format(settings.getStartDate()) + "</b>"
 							+ " bis zum <b>" + dateFormat.format(settings.getEndDate())
 							+ "</b>" + " musst du <b>" + settings.getHours() + "</b> Stunden arbeiten.<br>"
-							+ "Du hast bereits <b>" + new TimeFactory().getWorkedHoursUsingSettings() + " Stunden</b> gearbeitet.");
+							+ "Du hast bereits <b><span style=\"color: " + (workedEnough ? "green;\">" : "red;\">") + timeFactory.getWorkedHoursUsingSettings() + " Stunden</span></b> gearbeitet.");
 				}
 
 				addComponent(informationLabel);
@@ -58,13 +62,13 @@ public class MenuView extends NavigationView {
 				WorkingDaysView workingDaysView = new WorkingDaysView();
 				NavigationButton showAllDaysButton = new NavigationButton("Alle Tage anzeigen", workingDaysView);
 				
-				SettingsView settingsView = new SettingsView();
-				NavigationButton settingsButton = new NavigationButton("Einstellungen", settingsView);
+				FilterView filterView = new FilterView();
+				NavigationButton filterButton = new NavigationButton("Filter", filterView);
 
 				// Add Buttons to the group
 				addComponent(editDayButton);
 				addComponent(showAllDaysButton);
-				addComponent(settingsButton);
+				addComponent(filterButton);
 			}
 		});
 

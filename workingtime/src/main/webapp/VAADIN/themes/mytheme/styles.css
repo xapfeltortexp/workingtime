@@ -28,8 +28,16 @@
 		color: white !important;
 	}
 	
+	.v-touchkit-navbutton-back:after {
+		color: white !important;
+	}
+	
 	.v-button-wrap {
 		color: white;
+	}
+	
+	.v-icon {
+		color: rgb(199, 43, 43) !important;
 	}
 	
 	.v-textarea:focus, .v-textfield:focus {
